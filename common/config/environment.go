@@ -121,8 +121,8 @@ func (conf *InmemoryConfiguration) GetSubProperty(subKey string) map[string]stru
 	conf.store.Range(func(key, value interface{}) bool {
 		if idx := strings.Index(key.(string), subKey); idx >= 0 {
 			after := key.(string)[idx+len(subKey):]
-			if i := strings.Index(after, "."); i >= 0 {
-				properties[after[0:strings.Index(after, ".")]] = struct{}{}
+			if i := strings.LastIndex(after, "."); i >= 0 {
+				properties[after[0:i]] = struct{}{}
 			}
 
 		}

@@ -71,7 +71,7 @@ func doInitProvider() {
 		Services: map[string]*ServiceConfig{
 			"MockService": {
 				InterfaceName: "com.MockService",
-				Protocol:      "mock",
+				Protocol:      "myMock",
 				Registry:      "shanghai_reg1,shanghai_reg2,hangzhou_reg1,hangzhou_reg2",
 				Cluster:       "failover",
 				Loadbalance:   "random",
@@ -95,7 +95,7 @@ func doInitProvider() {
 			},
 		},
 		Protocols: map[string]*ProtocolConfig{
-			"mock": {
+			"myMock": {
 				Name: "mock",
 				Ip:   "127.0.0.1",
 				Port: "20000",

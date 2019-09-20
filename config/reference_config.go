@@ -63,6 +63,9 @@ type ReferenceConfig struct {
 }
 
 func (c *ReferenceConfig) Prefix() string {
+	if len(c.InterfaceName) == 0 {
+		return constant.ReferenceConfigPrefix
+	}
 	return constant.ReferenceConfigPrefix + c.InterfaceName + "."
 }
 

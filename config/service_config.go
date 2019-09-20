@@ -66,6 +66,9 @@ type ServiceConfig struct {
 }
 
 func (c *ServiceConfig) Prefix() string {
+	if len(c.InterfaceName) == 0 {
+		return constant.ServiceConfigPrefix
+	}
 	return constant.ServiceConfigPrefix + c.InterfaceName + "."
 }
 

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package config
 
 import (
@@ -25,6 +26,7 @@ import (
 
 import (
 	"github.com/creasty/defaults"
+	"github.com/dubbogo/getty"
 	perrors "github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )
@@ -38,6 +40,7 @@ import (
 // consumerConfig
 /////////////////////////
 
+// ConsumerConfig ...
 type ConsumerConfig struct {
 	BaseConfig `yaml:",inline"`
 	Filter     string `yaml:"filter" json:"filter,omitempty" property:"filter"`
@@ -60,6 +63,7 @@ type ConsumerConfig struct {
 	ShutdownConfig *ShutdownConfig             `yaml:"shutdown_conf" json:"shutdown_conf,omitempty" property:"shutdown_conf" `
 }
 
+// UnmarshalYAML ...
 func (c *ConsumerConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	if err := defaults.Set(c); err != nil {
 		return err
@@ -71,14 +75,17 @@ func (c *ConsumerConfig) UnmarshalYAML(unmarshal func(interface{}) error) error 
 	return nil
 }
 
+// Prefix ...
 func (*ConsumerConfig) Prefix() string {
 	return constant.ConsumerConfigPrefix
 }
 
+// SetConsumerConfig ...
 func SetConsumerConfig(c ConsumerConfig) {
 	consumerConfig = &c
 }
 
+// GetConsumerConfig ...
 func GetConsumerConfig() ConsumerConfig {
 	if consumerConfig == nil {
 		logger.Warnf("consumerConfig is nil!")
@@ -87,6 +94,7 @@ func GetConsumerConfig() ConsumerConfig {
 	return *consumerConfig
 }
 
+// ConsumerInit ...
 func ConsumerInit(confConFile string) error {
 	if confConFile == "" {
 		return perrors.Errorf("application configure(consumer) file name is nil")
@@ -117,6 +125,10 @@ func ConsumerInit(confConFile string) error {
 	if consumerConfig.Request_Timeout != "" {
 		if consumerConfig.RequestTimeout, err = time.ParseDuration(consumerConfig.Request_Timeout); err != nil {
 			return perrors.WithMessagef(err, "time.ParseDuration(Request_Timeout{%#v})", consumerConfig.Request_Timeout)
+		}
+		if consumerConfig.RequestTimeout >= time.Duration(getty.MaxWheelTimeSpan) {
+			return perrors.WithMessagef(err, "request_timeout %s should be less than %s",
+				consumerConfig.Request_Timeout, time.Duration(getty.MaxWheelTimeSpan))
 		}
 	}
 	if consumerConfig.Connect_Timeout != "" {

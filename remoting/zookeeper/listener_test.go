@@ -101,7 +101,8 @@ func TestListener(t *testing.T) {
 	_, err := client.Conn.Set("/dubbo/dubbo.properties", []byte(changedData), 1)
 	assert.NoError(t, err)
 	wait.Wait()
-	assert.Equal(t, changedData, dataListener.eventList[1].Content)
+	listener.wg.Wait()
+	assert.Equal(t, changedData, dataListener.eventList[0].Content)
 	client.Close()
 
 }
